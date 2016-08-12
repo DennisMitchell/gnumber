@@ -13,7 +13,7 @@ class Gnumber:
 		scale = -cls._denominator_log
 		retval = '-'[: part < 0]
 		numerator = str(abs(part))
-		retval += (numerator[:scale] or '0') + '.' + numerator[scale : scale + decimal_digits or None].rjust(-scale, '0')
+		retval += (numerator[:scale] or '0') + '.' + numerator[scale : scale + decimal_digits or None].ljust(-scale, '0')
 		retval = retval.rstrip('0').rstrip('.')
 		return retval
 
@@ -70,8 +70,8 @@ class Gnumber:
 		class_name = self.__class__.__name__
 		part_to_repr = self.__class__._part_to_repr
 		if self._imag == 0:
-			return "%s('%s')" % (class_name, part_to_repr(self._real))
-		return "%s('%s', '%s')" % (class_name, part_to_repr(self._real), part_to_repr(self._imag))
+			return '%s(%r)' % (class_name, part_to_repr(self._real))
+		return '%s(%r, %r)' % (class_name, part_to_repr(self._real), part_to_repr(self._imag))
 
 	def __rtruediv__(self, value):
 		return value / self
@@ -101,9 +101,9 @@ class Gnumber:
 	def _roundiv(self, value):
 		retval = self.__class__()
 		double_quotient = (self._real << 1) // value
-		retval._real = (double_quotient >> 1) | (double_quotient & 1)
+		retval._real = (double_quotient >> 1) + (double_quotient & 1)
 		double_quotient = (self._imag << 1) // value
-		retval._imag = (double_quotient >> 1) | (double_quotient & 1)
+		retval._imag = (double_quotient >> 1) + (double_quotient & 1)
 		return retval
 
 	def _mul_noscale(self, value):
